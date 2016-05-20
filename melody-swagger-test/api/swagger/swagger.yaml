@@ -1,0 +1,149 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Project Melody
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths
+basePath: /
+#
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /hello:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: hello_world
+    get:
+      description: Returns 'Hello' to the caller
+      # used as the method name of the controller
+      operationId: hello
+      parameters:
+        - name: name
+          in: query
+          description: The name of the person to whom to say hello
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HelloWorldResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /characters:
+    x-swagger-router-controller: characters
+    get:
+      description: Returns a list of characters to the caller
+      # used as the method name of the controller
+      operationId: characters
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CharactersResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /accounts:
+    x-swagger-router-controller: accounts
+    get:
+      description: Returns a list of accounts to the caller
+      # used as the method name of the controller
+      operationId: accounts
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /accounts/{accountId}:
+    x-swagger-router-controller: account
+    get:
+      description: Returns a list of accounts to the caller
+      # used as the method name of the controller
+      operationId: account
+      parameters:
+        - name: accountId
+          in: path
+          description: The ID of the account to query for
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  HelloWorldResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  CharactersResponse:
+    required:
+      - error
+      - message
+    properties:
+      error:
+        type: boolean
+      message:
+        type: string
+      characters:
+        type: string
+  AccountResponse:
+    required:
+      - error
+      - accountName
+      - accountPassword
+    properties:
+      error:
+        type: boolean
+      accountName:
+        type: string
+      accountPassword:
+        type: string
+  AccountsResponse:
+    required:
+      - error
+      - accountIds
+    properties:
+      error:
+        type: boolean
+      accountIds:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
